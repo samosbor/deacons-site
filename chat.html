@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <style>
+      .request {
+        background: #ddd;
+      }
+      .response {
+        font-style: italic;
+      }
+    </style>
+    <script>
+      var host = "https://bradshawfamily.net/deacons/";
+      function clearState() {
+        document.getElementById("state").value = "{}";
+      }
+      function converse() {
+        var theDiv = document.getElementById("history");
+        theDiv.innerHTML += "<p class='request'>" + document.getElementById("th\
+eText").value;
+        var request = new XMLHttpRequest();
+        request.onload = function() {
+          data = JSON.parse(request.responseText);
+          theDiv.innerHTML += "<p class='response'>" + data[0];
+          document.getElementById("state").value = JSON.stringify(data[1]);
+        }
+        request.open("POST", host + "reply", true);
+        var formData = new FormData(document.getElementById("theForm"));
+        request.send(formData);
+      }
+    </script>
+  </head>
+  <body>
+    <div style="margin: 10%; border: 1px dotted blue; padding: 5%">
+    <div id="history">
+    </div>
+    <form id="theForm">
+      <br><br>Talk to
+      <select name="name" onchange="clearState(); converse()">
+        <option></option>
+        <option>robert</option>
+        <option>sam</option>
+        <option>echo</option>
+      </select>
+      <br><br><textarea name="text" id="theText" rows=3 cols=50></textarea>
+      <br><br><input type="button" onclick="converse()" value="Reply">
+      <br><br><input name="state" id="state" value="{}">
+    </form>
+    </div>
+  </body>
+</html>
